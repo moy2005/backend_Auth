@@ -79,6 +79,11 @@ app.use(limiter);
 app.get('/', (req, res) => {
   res.send('🚀 API funcionando correctamente en entorno de producción');
 });
+
+// Evitar timeout al pedir favicon.ico
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
+
 app.use('/api/auth', authRoutes);
 app.use('/api/oauth', oauthRoutes);
 app.use('/api/webauthn', webauthnRoutes);
