@@ -3,35 +3,31 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const isProd = process.env.NODE_ENV === 'production'; // 🔹 Detecta si estás en Vercel o local
-
+// Configuración del pool de conexiones MySQL
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT) || 3306,
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASS || '',
+  database: process.env.DB_NAME || 'tu_base_de_datos',
+  port: process.env.DB_PORT || 3306,
   waitForConnections: true,
-  connectionLimit: 5,
+  connectionLimit: 10,
   queueLimit: 0,
   enableKeepAlive: true,
-  keepAliveInitialDelay: 0,
-  connectTimeout: 10000,
-  ssl: isProd
-    ? { rejectUnauthorized: true } // ✅ Solo en producción (Vercel)
-    : false, // ❌ Desactiva SSL en local
+  keepAliveInitialDelay: 0
 });
 
-// ✅ Verificar conexión una sola vez
-(async () => {
-  try {
-    const conn = await pool.getConnection();
-    console.log('✅ Conexión exitosa a MySQL');
-    conn.release();
-  } catch (err) {
-    console.error('❌ Error al conectar a MySQL:', err.message);
-  }
-})();
-
+// Exportar el pool para usar en los modelos
 export const poolPromise = pool;
+
+// Verificar conexión
+pool.getConnection()
+  .then(connection => {
+    console.log('✅ Conexión exitosa a MySQL');
+    connection.release();
+  })
+  .catch(err => {
+    console.error('❌ Error al conectar a MySQL:', err);
+  });
+
 export default pool;
