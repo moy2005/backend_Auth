@@ -11,6 +11,8 @@ import authRoutes from './routes/auth.routes.js';
 import oauthRoutes from './routes/oauth.routes.js';
 import webauthnRoutes from './routes/webauthn.routes.js';
 import smsRoutes from './routes/sms.routes.js';
+import dbTestRoutes from "./routes/dbtest.routes.js";
+
 
 dotenv.config();
 const app = express();
@@ -96,5 +98,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/oauth', oauthRoutes);
 app.use('/api/webauthn', webauthnRoutes);
 app.use('/api/sms', smsRoutes);
+
+app.use("/api/db-test", dbTestRoutes);
 
 export default app;
