@@ -8,16 +8,16 @@ const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306,
+  port: Number(process.env.DB_PORT) || 3306,
   waitForConnections: true,
-  connectionLimit: 5,    
+  connectionLimit: 5,
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
-  connectTimeout: 10000,  
+  connectTimeout: 10000
 });
 
-// Verificar conexión (una sola vez)
+// ✅ Verificar conexión una sola vez
 (async () => {
   try {
     const conn = await pool.getConnection();
@@ -28,4 +28,6 @@ const pool = mysql.createPool({
   }
 })();
 
+// 🟢 Mantener compatibilidad con todos los servicios existentes
+export const poolPromise = pool; // 👈 Esto evita romper los imports viejos
 export default pool;
