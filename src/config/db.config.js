@@ -3,10 +3,12 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const isProd = process.env.NODE_ENV === 'production'; // 🔹 Detecta si estás en Vercel o local
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   port: Number(process.env.DB_PORT) || 3306,
   waitForConnections: true,
@@ -14,7 +16,10 @@ const pool = mysql.createPool({
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
-  connectTimeout: 10000
+  connectTimeout: 10000,
+  ssl: isProd
+    ? { rejectUnauthorized: true } // ✅ Solo en producción (Vercel)
+    : false, // ❌ Desactiva SSL en local
 });
 
 // ✅ Verificar conexión una sola vez
@@ -28,6 +33,5 @@ const pool = mysql.createPool({
   }
 })();
 
-// 🟢 Mantener compatibilidad con todos los servicios existentes
-export const poolPromise = pool; // 👈 Esto evita romper los imports viejos
+export const poolPromise = pool;
 export default pool;

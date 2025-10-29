@@ -11,7 +11,7 @@ import authRoutes from './routes/auth.routes.js';
 import oauthRoutes from './routes/oauth.routes.js';
 import webauthnRoutes from './routes/webauthn.routes.js';
 import smsRoutes from './routes/sms.routes.js';
-import dbTestRoutes from "./routes/dbtest.routes.js";
+import testRoutes from "./routes/test.routes.js";
 
 
 dotenv.config();
@@ -99,6 +99,6 @@ app.use('/api/oauth', oauthRoutes);
 app.use('/api/webauthn', webauthnRoutes);
 app.use('/api/sms', smsRoutes);
 
-app.use("/api/db-test", dbTestRoutes);
+app.use("/api", testRoutes);
 
 export default app;
