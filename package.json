@@ -5,9 +5,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
-  },
+  "dev": "nodemon src/server.js",
+  "start": "node src/server.js",
+  "vercel-build": "echo 'Vercel build step completed'"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

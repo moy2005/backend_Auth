@@ -1,6 +1,4 @@
-import app from '../src/app.js';
-import serverless from 'serverless-http';
+import serverless from "serverless-http";
+import app from "../src/app.js";
 
-// Convierte tu app Express en una función compatible con Vercel
-export const handler = serverless(app);
-
+export default serverless(app);
