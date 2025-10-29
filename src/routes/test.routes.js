@@ -6,14 +6,15 @@ const router = express.Router();
 router.get("/test-db", async (req, res) => {
   try {
     const [rows] = await poolPromise.query("SELECT NOW() AS fecha;");
-    res.json({
-      message: "✅ Conexión activa con la base de datos",
+    res.status(200).json({
+      message: "✅ Conexión activa a FreeSQLDatabase desde Vercel",
       fechaServidor: rows[0].fecha,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("❌ Error al consultar la base de datos:", err.message);
     res.status(500).json({
-      message: "❌ Error al consultar la base de datos",
-      error: error.message,
+      message: "❌ Error al conectar con la base de datos",
+      error: err.message,
     });
   }
 });
