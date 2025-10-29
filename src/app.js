@@ -20,7 +20,13 @@ const app = express();
 
 //  Middlewares globales
 app.use(express.json());
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: false,
+    contentSecurityPolicy: false,
+  })
+);
+
 
 // 🧠 Configuración de CORS dinámica (segura para local + producción)
 app.use(cors({
