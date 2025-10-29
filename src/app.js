@@ -19,39 +19,45 @@ dotenv.config();
 const app = express();
 
 //  Middlewares globales
+app.set('trust proxy', 1); // 🔥 Necesario en Vercel para obtener IPs reales
 app.use(express.json());
+
 app.use(
   helmet({
-    // Desactiva la validación de cabeceras problemáticas con Vercel
     xPoweredBy: false,
+    crossOriginEmbedderPolicy: false,
     crossOriginOpenerPolicy: false,
     contentSecurityPolicy: false,
     hsts: false,
-    crossOriginEmbedderPolicy: false,
     originAgentCluster: false,
   })
 );
 
 
 // 🧠 Configuración de CORS dinámica (segura para local + producción)
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:4200',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true, // Permite cookies o tokens en peticiones cross-domain
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  })
+);
+
 
 //  Configuración de sesiones segura
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev_secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production', // solo HTTPS en prod
-    httpOnly: true,
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
-  }
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'dev_secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    },
+  })
+);
 
 //  Inicialización de Passport (OAuth)
 app.use(passport.initialize());
@@ -59,8 +65,8 @@ app.use(passport.session());
 
 //  Límite de peticiones (protección DDoS y fuerza bruta)
 const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 100, // máximo 100 requests/minuto
+  windowMs: 60 * 1000,
+  max: 100,
   standardHeaders: true,
   legacyHeaders: false,
   message: '⚠️ Demasiadas peticiones desde esta IP. Intenta más tarde.',
