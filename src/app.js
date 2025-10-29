@@ -22,8 +22,13 @@ const app = express();
 app.use(express.json());
 app.use(
   helmet({
+    // Desactiva la validación de cabeceras problemáticas con Vercel
+    xPoweredBy: false,
     crossOriginOpenerPolicy: false,
     contentSecurityPolicy: false,
+    hsts: false,
+    crossOriginEmbedderPolicy: false,
+    originAgentCluster: false,
   })
 );
 
